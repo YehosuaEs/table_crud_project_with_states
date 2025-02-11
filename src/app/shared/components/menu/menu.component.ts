@@ -10,10 +10,15 @@ import { SidebarModule } from 'primeng/sidebar';
   styleUrl: './menu.component.scss'
 })
 export class MenuComponent implements OnInit {
-  public items: MenuItem[] = [];
+  public items: MenuItem[] = this.getMenuItems();
 
   ngOnInit(): void {
-    this.items = [
+    if (!this.items.length) {
+      this.items = this.getMenuItems();
+    }
+  }
+  private getMenuItems(): MenuItem[] {
+    return [
       {
         label: 'Projects',
         items: [
