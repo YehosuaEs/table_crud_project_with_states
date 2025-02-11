@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { tap } from 'rxjs';
+import { Project } from './interfaces/project.interface';
+import { ProjectsService } from './services/projects.service';
 
 @Component({
   selector: 'app-list',
@@ -6,4 +9,15 @@ import { Component } from '@angular/core';
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
-export class ListComponent {}
+export class ListComponent implements OnInit {
+  public projects: Project[] = [];
+
+  constructor(private projectsService: ProjectsService) {}
+
+  ngOnInit(): void {
+    this.projectsService
+      .getProjects()
+      .pipe(tap((data: Project[]): Project[] => (this.projects = data)))
+      .subscribe();
+  }
+}
