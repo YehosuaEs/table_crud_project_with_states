@@ -1,0 +1,10 @@
+:host ::ng-deep .p-table {
+  width: 100%;
+}
+.text-active {
+  color: var(--p-primary-color);
+}
+
+.text-inactive {
+  color: var(--p-text-muted-color);
+}
