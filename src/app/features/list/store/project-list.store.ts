@@ -48,7 +48,7 @@ export const ProjectsStore = signalStore(
     },
     _deleteProject(id: string): void {
       patchState(store, {
-        _projects: store._projects().filter(project => project.id !== id)
+        _projects: store._projects().filter((project: Project) => project.id !== id)
       });
     }
   })),
