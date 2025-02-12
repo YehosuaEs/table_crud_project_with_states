@@ -1,4 +1,12 @@
-<p-table [value]="projects()" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+<p-table #projectsListTable [value]="projects()" [paginator]="true" [rows]="5" responsiveLayout="scroll"
+  [globalFilterFields]="['name', 'description', 'status']">
+
+  <ng-template #caption>
+    <div class="caption-section">
+      <input pInputText type="text" (input)="onFilterTable($event)" placeholder="Search project" />
+    </div>
+  </ng-template>
+
   <ng-template pTemplate="header">
     <tr>
       <th></th>
