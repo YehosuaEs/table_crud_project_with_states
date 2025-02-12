@@ -1,36 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { tap } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { TableProjectComponent } from './components/table-project/table-project.component';
 import { Project } from './interfaces/project.interface';
-import { ProjectsService } from './services/projects.service';
+import { ProjectsStore } from './store/project-list.store';
 
 @Component({
   selector: 'app-list',
-  imports: [TableProjectComponent],
+  imports: [TableProjectComponent, CommonModule],
+  providers: [ProjectsStore],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
-export class ListComponent implements OnInit {
-  public projects: Project[] = [];
-  // public projects = signal<Project[]>([]);
-
-  constructor(private projectsService: ProjectsService) {}
-
-  ngOnInit(): void {
-    this.projectsService
-      .getProjects()
-      .pipe(tap((data: Project[]): Project[] => (this.projects = data)))
-      .subscribe();
-  }
+export class ListComponent {
+  public readonly projectListStore = inject(ProjectsStore);
 
   public onEdit(project: Project): void {
     console.log('Edit project:', project);
   }
 
-  public onDelete(name: string): void {
+  public onDelete(id: string): void {
     // Update to use confirmation dialog
     if (confirm('Are you sure you want to delete this project')) {
-      this.projectsService.deleteProject(name).subscribe();
+      this.projectListStore.deleteProject(id);
     }
   }
 }
