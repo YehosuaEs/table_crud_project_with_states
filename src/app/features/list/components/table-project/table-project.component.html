@@ -1,0 +1,26 @@
+<p-table [value]="projects()" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>Name project</th>
+      <th>Description</th>
+      <th>Status</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-project>
+    <tr>
+      <td>
+        <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" (click)="onEdit(project)" />
+        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (click)="onDelete(project.id)" />
+      </td>
+      <td>{{ project.name }}</td>
+      <td>{{ project.description }}</td>
+      <td>
+        <span [ngClass]="{ 'text-active': project.status === 'Activo', 'text-inactive': project.status === 'Inactivo' }">
+          {{ project.status }}
+        </span>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

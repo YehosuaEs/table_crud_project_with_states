@@ -17,16 +17,16 @@ export class ProjectsService {
     return of().pipe(delay(DELAY_TIME));
   }
 
-  public updateProject(name: string, updatedProject: Project): Observable<void> {
-    const index = projectsMock.findIndex((project: Project): boolean => project.name === name);
+  public updateProject(id: string, updatedProject: Project): Observable<void> {
+    const index = projectsMock.findIndex((project: Project): boolean => project.id === id);
     if (index !== -1) {
-      projectsMock[index] = updatedProject;
+      projectsMock[index] = { ...projectsMock[index], ...updatedProject };
     }
     return of().pipe(delay(DELAY_TIME));
   }
 
-  public deleteProject(name: string): Observable<void> {
-    const index = projectsMock.findIndex((project: Project): boolean => project.name === name);
+  public deleteProject(id: string): Observable<void> {
+    const index = projectsMock.findIndex((project: Project): boolean => project.id === id);
     if (index !== -1) {
       projectsMock.splice(index, 1);
     }
