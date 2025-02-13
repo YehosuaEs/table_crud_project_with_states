@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { TableProjectComponent } from './components/table-project/table-project.component';
 import { Project } from './interfaces/project.interface';
 import { ProjectsStore } from './store/project-list.store';
@@ -7,15 +8,19 @@ import { ProjectsStore } from './store/project-list.store';
 @Component({
   selector: 'app-list',
   imports: [TableProjectComponent, CommonModule],
-  providers: [ProjectsStore],
+  providers: [],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
 export class ListComponent {
   public readonly projectListStore = inject(ProjectsStore);
+  private readonly router: Router = inject(Router);
 
+  public onAddNew(): void {
+    // this.router.navigate(['/form']);
+  }
   public onEdit(project: Project): void {
-    console.log('Edit project:', project);
+    this.router.navigate(['/form', project.id]);
   }
 
   public onDelete(id: string): void {
