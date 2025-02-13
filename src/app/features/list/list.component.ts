@@ -16,9 +16,9 @@ export class ListComponent {
   public readonly projectListStore = inject(ProjectsStore);
   private readonly router: Router = inject(Router);
 
-  public onAddNew(): void {
-    // this.router.navigate(['/form']);
-  }
+  // public onAddNew(): void {
+  // this.router.navigate(['/form']);
+  // }
   public onEdit(project: Project): void {
     this.router.navigate(['/form', project.id]);
   }

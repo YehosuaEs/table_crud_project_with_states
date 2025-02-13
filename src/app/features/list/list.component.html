@@ -1,5 +1,5 @@
 @let isLoading = projectListStore.isLoading();
 @if (!isLoading) {
-<app-table-project [projects]="projectListStore.projectsData()" (add)="onAddNew()" (edit)="onEdit($event)" (delete)="onDelete($event)">
+<app-table-project [projects]="projectListStore.projectsData()" (add)="null" (edit)="onEdit($event)" (delete)="onDelete($event)">
 </app-table-project>
 }
