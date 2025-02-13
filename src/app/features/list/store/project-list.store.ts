@@ -29,22 +29,29 @@ export const ProjectsStore = signalStore(
 
   withMethods(store => ({
     _setLoading(): void {
-      patchState(store, { _projects: [], isLoading: true, error: null });
+      patchState(store, { isLoading: true });
+    },
+    _setLoaded(): void {
+      patchState(store, { isLoading: false });
     },
     _setProjects(_projects: Project[]): void {
-      patchState(store, { _projects, error: null });
+      patchState(store, { _projects });
     },
     _setError(error: string): void {
-      patchState(store, { _projects: [], error });
+      patchState(store, { error });
     },
-    _addProject(): void {
-      patchState(store, { error: null });
+    _addProject(project: Project): void {
+      patchState(store, {
+        _projects: [...store._projects(), project]
+      });
     },
-    _updateProject(): void {
-      patchState(store, { error: null });
+    _updateProject(id: string, updatedProject: Project): void {
+      patchState(store, {
+        _projects: store._projects().map(project => (project.id === id ? { ...project, ...updatedProject } : project))
+      });
     },
-    _deleteProject(): void {
-      patchState(store, { error: null });
+    _deleteProject(id: string): void {
+      patchState(store, { _projects: store._projects().filter(project => project.id !== id) });
     }
   })),
 
@@ -58,46 +65,49 @@ export const ProjectsStore = signalStore(
               next: (projects: Project[]) => store._setProjects(projects),
               error: (error: HttpErrorResponse) => store._setError(error.message)
             }),
-            finalize(() => patchState(store, { isLoading: false }))
+            finalize(() => store._setLoaded())
           )
         )
       )
     ),
     addProject: rxMethod<Project>(
       pipe(
+        tap(() => store._setLoading()),
         switchMap((project: Project) =>
           projectsService.addProject(project).pipe(
             tapResponse({
-              next: () => store._addProject(),
+              next: () => store._addProject(project),
               error: (error: HttpErrorResponse) => store._setError(error.message)
             }),
-            finalize(() => patchState(store, { isLoading: false }))
+            finalize(() => store._setLoaded())
           )
         )
       )
     ),
     updateProject: rxMethod<{ id: string; updatedProject: Project }>(
       pipe(
+        tap(() => store._setLoading()),
         switchMap(({ id, updatedProject }) =>
           projectsService.updateProject(id, updatedProject).pipe(
             tapResponse({
-              next: () => store._updateProject(),
+              next: () => store._updateProject(id, updatedProject),
               error: (error: HttpErrorResponse) => store._setError(error.message)
             }),
-            finalize(() => patchState(store, { isLoading: false }))
+            finalize(() => store._setLoaded())
           )
         )
       )
     ),
     deleteProject: rxMethod<string>(
       pipe(
+        tap(() => store._setLoading()),
         switchMap((id: string) =>
           projectsService.deleteProject(id).pipe(
             tapResponse({
-              next: () => store._deleteProject(),
+              next: () => store._deleteProject(id),
               error: (error: HttpErrorResponse) => store._setError(error.message)
             }),
-            finalize(() => patchState(store, { isLoading: false }))
+            finalize(() => store._setLoaded())
           )
         )
       )
