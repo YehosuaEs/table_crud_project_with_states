@@ -1,9 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { computed, inject } from '@angular/core';
+import { computed, effect, inject } from '@angular/core';
 import { tapResponse } from '@ngrx/operators';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { pipe, switchMap, tap } from 'rxjs';
+import { finalize, pipe, switchMap, tap } from 'rxjs';
 import { Project } from '../interfaces/project.interface';
 import { ProjectsService } from '../services/projects.service';
 interface ProjectsState {
@@ -19,6 +19,7 @@ export const initialState: ProjectsState = {
 };
 
 export const ProjectsStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
 
   withComputed(({ _projects }) => ({
@@ -31,25 +32,19 @@ export const ProjectsStore = signalStore(
       patchState(store, { _projects: [], isLoading: true, error: null });
     },
     _setProjects(_projects: Project[]): void {
-      patchState(store, { _projects, isLoading: false, error: null });
+      patchState(store, { _projects, error: null });
     },
     _setError(error: string): void {
-      patchState(store, { _projects: [], isLoading: false, error });
+      patchState(store, { _projects: [], error });
     },
-    _addProject(project: Project): void {
-      patchState(store, { _projects: [...store._projects(), project] });
+    _addProject(): void {
+      patchState(store, { error: null });
     },
-    _updateProject(updatedProject: Project): void {
-      patchState(store, {
-        _projects: store
-          ._projects()
-          .map((project: Project) => (project.id === updatedProject.id ? { ...project, ...updatedProject } : project))
-      });
+    _updateProject(): void {
+      patchState(store, { error: null });
     },
-    _deleteProject(id: string): void {
-      patchState(store, {
-        _projects: store._projects().filter((project: Project) => project.id !== id)
-      });
+    _deleteProject(): void {
+      patchState(store, { error: null });
     }
   })),
 
@@ -62,7 +57,8 @@ export const ProjectsStore = signalStore(
             tapResponse({
               next: (projects: Project[]) => store._setProjects(projects),
               error: (error: HttpErrorResponse) => store._setError(error.message)
-            })
+            }),
+            finalize(() => patchState(store, { isLoading: false }))
           )
         )
       )
@@ -72,9 +68,10 @@ export const ProjectsStore = signalStore(
         switchMap((project: Project) =>
           projectsService.addProject(project).pipe(
             tapResponse({
-              next: () => store._addProject(project),
+              next: () => store._addProject(),
               error: (error: HttpErrorResponse) => store._setError(error.message)
-            })
+            }),
+            finalize(() => patchState(store, { isLoading: false }))
           )
         )
       )
@@ -84,9 +81,10 @@ export const ProjectsStore = signalStore(
         switchMap(({ id, updatedProject }) =>
           projectsService.updateProject(id, updatedProject).pipe(
             tapResponse({
-              next: () => store._updateProject(updatedProject),
+              next: () => store._updateProject(),
               error: (error: HttpErrorResponse) => store._setError(error.message)
-            })
+            }),
+            finalize(() => patchState(store, { isLoading: false }))
           )
         )
       )
@@ -96,9 +94,10 @@ export const ProjectsStore = signalStore(
         switchMap((id: string) =>
           projectsService.deleteProject(id).pipe(
             tapResponse({
-              next: () => store._deleteProject(id),
+              next: () => store._deleteProject(),
               error: (error: HttpErrorResponse) => store._setError(error.message)
-            })
+            }),
+            finalize(() => patchState(store, { isLoading: false }))
           )
         )
       )
@@ -107,7 +106,9 @@ export const ProjectsStore = signalStore(
 
   withHooks({
     onInit(store) {
-      store._loadProjects();
+      effect(() => {
+        store._loadProjects();
+      });
     }
   })
 );

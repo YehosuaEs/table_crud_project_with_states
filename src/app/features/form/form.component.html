@@ -1,1 +1,25 @@
-<p>form works!</p>
+<p-card header="Edit Project" [style]="{ width: '100%', height: '100%' }">
+
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+    <div class=" field-container name">
+      <label class="name__label" for="name">Project Name</label>
+      <input pInputText class="name_input" id="name" formControlName="name" type="text" placeholder="Enter project name" />
+    </div>
+
+    <div class="field-container description">
+      <label class="description__label" for="description">Description</label>
+      <textarea class="description__textarea" rows="5" pTextarea id="description" formControlName="description"
+        placeholder="Enter description"></textarea>
+    </div>
+
+    <div class="field-container status">
+      <label class="status_lable" for="status">Status</label>
+      <p-togglebutton class="status_toggle" formControlName="status" onLabel="Active" offLabel="Inactive" />
+    </div>
+
+    <div class="button-container">
+      <p-button type="submit" label="Save" severity="info" icon="pi pi-save" />
+    </div>
+
+  </form>
+</p-card>

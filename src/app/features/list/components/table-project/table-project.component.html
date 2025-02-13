@@ -3,6 +3,7 @@
 
   <ng-template #caption>
     <div class="caption-section">
+      <button pButton disabled label="Add New Project" icon="pi pi-plus" (click)="onAddNew()" class="add-button"></button>
       <input pInputText type="text" (input)="onFilterTable($event)" placeholder="Search project" />
     </div>
   </ng-template>
@@ -25,8 +26,8 @@
       <td>{{ project.name }}</td>
       <td>{{ project.description }}</td>
       <td>
-        <span [ngClass]="{ 'text-active': project.status === 'Activo', 'text-inactive': project.status === 'Inactivo' }">
-          {{ project.status }}
+        <span [ngClass]="{ 'text-active': project.status , 'text-inactive': !project.status }">
+          {{ project.status ? 'Active' : 'Inactive' }}
         </span>
       </td>
     </tr>
