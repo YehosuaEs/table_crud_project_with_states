@@ -1,0 +1,35 @@
+<p-table #projectsListTable [value]="projects()" [paginator]="true" [rows]="5" responsiveLayout="scroll"
+  [globalFilterFields]="['name', 'description', 'status']">
+
+  <ng-template #caption>
+    <div class="caption-section">
+      <button pButton disabled label="Add New Project" icon="pi pi-plus" (click)="onAddNew()" class="add-button"></button>
+      <input pInputText type="text" (input)="onFilterTable($event)" placeholder="Search project" />
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="header">
+    <tr>
+      <th></th>
+      <th>Name project</th>
+      <th>Description</th>
+      <th>Status</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-project>
+    <tr>
+      <td>
+        <p-button icon="pi pi-pencil" [rounded]="true" [text]="true" severity="info" (click)="onEdit(project)" />
+        <p-button icon="pi pi-trash" [rounded]="true" [text]="true" severity="danger" (click)="onDelete(project.id)" />
+      </td>
+      <td>{{ project.name }}</td>
+      <td>{{ project.description }}</td>
+      <td>
+        <span [ngClass]="{ 'text-active': project.status , 'text-inactive': !project.status }">
+          {{ project.status ? 'Active' : 'Inactive' }}
+        </span>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
