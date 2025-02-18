@@ -1,3 +1,4 @@
+import { Validators } from '@angular/forms';
 /* eslint-disable @typescript-eslint/member-ordering */
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -10,13 +11,13 @@ import { ToggleButtonModule } from 'primeng/togglebutton';
 import { Project } from '../list/interfaces/project.interface';
 import { ProjectsStore } from '../list/store/project-list.store';
 @Component({
-  selector: 'app-form',
+  selector: 'app-edit-form',
   imports: [ReactiveFormsModule, CardModule, ToggleButtonModule, ButtonModule, InputTextModule, TextareaModule],
   providers: [],
-  templateUrl: './form.component.html',
-  styleUrl: './form.component.scss'
+  templateUrl: './edit-form.component.html',
+  styleUrl: './edit-form.component.scss'
 })
-export class FormComponent implements OnInit {
+export class EditFormComponent implements OnInit {
   public readonly projectListStore = inject(ProjectsStore);
   private readonly activateRoute = inject(ActivatedRoute);
   private readonly router: Router = inject(Router);
@@ -40,7 +41,7 @@ export class FormComponent implements OnInit {
 
   private initForm(): FormGroup {
     return new FormGroup({
-      name: new FormControl('', []),
+      name: new FormControl('', [Validators.required]),
       description: new FormControl('', []),
       status: new FormControl('', [])
     });
