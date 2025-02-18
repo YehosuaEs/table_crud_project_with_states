@@ -25,6 +25,14 @@ describe('ListComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should navigate to the create form view', () => {
+    const spy = spyOn(router, 'navigate');
+
+    component.onAdd();
+
+    expect(spy).toHaveBeenCalledWith(['/form/create_project']);
+  });
+
   it('should navigate to /form when onEdit is called', () => {
     const spy = spyOn(router, 'navigate');
     const project = projectsMock[0];
@@ -32,5 +40,12 @@ describe('ListComponent', () => {
     component.onEdit(project);
 
     expect(spy).toHaveBeenCalledWith(['/form', project.id]);
+  });
+
+  it('should call deleteProject when onDelete is called and user confirms', () => {
+    const id = projectsMock[0].id;
+    const confirmSpy = spyOn(window, 'confirm').and.returnValue(true);
+    component.onDelete(id);
+    expect(confirmSpy).toHaveBeenCalled();
   });
 });
