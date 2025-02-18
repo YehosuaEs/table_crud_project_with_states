@@ -8,9 +8,9 @@ const DELAY_TIME = 2000;
 describe('ProjectsService', () => {
   let service: ProjectsService;
   const originalMockData = [
-    { id: 'id-1', name: 'Project 1', description: 'Description 1', status: false },
-    { id: 'id-2', name: 'Project 2', description: 'Description 2', status: true },
-    { id: 'id-3', name: 'Project 3', description: 'Description 3', status: false }
+    { id: projectsMock[0].id, name: 'Project 1', description: 'Description 1', status: false },
+    { id: projectsMock[1].id, name: 'Project 2', description: 'Description 2', status: true },
+    { id: projectsMock[2].id, name: 'Project 3', description: 'Description 3', status: false }
   ];
 
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('ProjectsService', () => {
 
   it('should add a new project', fakeAsync(() => {
     const newProject: Project = {
-      id: 'id-4',
+      id: 'id-123456',
       name: 'New Project',
       description: 'lorem Ipsum description',
       status: false
@@ -48,23 +48,21 @@ describe('ProjectsService', () => {
 
   it('should update an existing project', fakeAsync(() => {
     const updatedProject: Project = {
-      id: 'id-1',
-      name: 'Updated Project',
-      description: 'Updated description',
-      status: false
+      ...projectsMock[0],
+      name: 'Updated Project'
     };
 
-    service.updateProject('id-1', updatedProject).subscribe();
+    service.updateProject(projectsMock[0].id, updatedProject).subscribe();
     tick(DELAY_TIME);
 
-    const project = projectsMock.find(project => project.id === 'id-1');
+    const project = projectsMock.find(project => project.id === projectsMock[0].id);
     expect(project).toEqual(updatedProject);
   }));
 
   it('should delete a project', fakeAsync(() => {
     expect(projectsMock.length).toBe(3);
 
-    const idToDelete = 'id-1';
+    const idToDelete = projectsMock[2].id;
 
     service.deleteProject(idToDelete).subscribe();
     tick(DELAY_TIME);
