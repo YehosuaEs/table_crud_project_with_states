@@ -21,6 +21,7 @@ export class MenuComponent implements OnInit {
     return [
       {
         label: 'Projects',
+        expanded: true,
         items: [
           {
             label: 'List',
@@ -30,7 +31,7 @@ export class MenuComponent implements OnInit {
           {
             label: 'Form',
             icon: 'pi pi-file-edit',
-            routerLink: '/form'
+            routerLink: '/form/create_project'
           }
         ]
       }
