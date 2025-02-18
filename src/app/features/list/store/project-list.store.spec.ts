@@ -1,10 +1,11 @@
 import { fakeAsync, TestBed, tick } from '@angular/core/testing';
-import { delay, of } from 'rxjs';
+import { delay, of, throwError } from 'rxjs';
 import { Project } from '../interfaces/project.interface';
 import { projectsMock } from '../mocks/project.mock';
 import { ProjectsService } from '../services/projects.service';
 import { ProjectsStore } from './project-list.store';
 const DELAY_TIME = 100;
+const ERROR_MESSAGE = 'Something went wrong';
 
 describe('ProjectsStore Initial states', () => {
   it('should check initial state of projectsData ', () => {
@@ -57,7 +58,7 @@ describe('ProjectsStore Methods', () => {
     const addNewProject: Project = {
       id: 'id-123456',
       name: 'Project Electron ',
-      description: 'Lorem ipsum dolor sit, consectetur',
+      description: 'lorem Ipsum description ',
       status: true
     };
 
@@ -105,13 +106,82 @@ describe('ProjectsStore Methods', () => {
     expect(store.projectsData().length).toBe(3);
 
     store.deleteProject(id);
-    expect(store.isLoading()).toBeTrue();
 
+    tick(DELAY_TIME);
+    expect(store.isLoading()).toBeTrue();
     tick(DELAY_TIME);
     expect(projectsService.deleteProject).toHaveBeenCalledWith(id);
     tick(DELAY_TIME);
     expect(store.projectsData().length).toBe(2);
     tick(DELAY_TIME);
     expect(store.isLoading()).toEqual(false);
+  }));
+});
+
+describe('ProjectsStore Error Handling', () => {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const setup = () => {
+    const projectsService = {
+      getProjects: jasmine.createSpy('getProjects').and.returnValue(throwError(() => new Error(ERROR_MESSAGE))),
+      addProject: jasmine.createSpy('addProject').and.returnValue(throwError(() => new Error(ERROR_MESSAGE))),
+      updateProject: jasmine.createSpy('updateProject').and.returnValue(throwError(() => new Error(ERROR_MESSAGE))),
+      deleteProject: jasmine.createSpy('deleteProject').and.returnValue(throwError(() => new Error(ERROR_MESSAGE)))
+    };
+
+    TestBed.configureTestingModule({
+      providers: [ProjectsStore, { provide: ProjectsService, useValue: projectsService }]
+    });
+
+    return { store: TestBed.inject(ProjectsStore), projectsService };
+  };
+
+  it('should throwError when _loadProjects method call', fakeAsync(() => {
+    const { store, projectsService } = setup();
+
+    tick(DELAY_TIME);
+    expect(projectsService.getProjects).toHaveBeenCalled();
+    tick(DELAY_TIME);
+    expect(store.error()).toContain(ERROR_MESSAGE);
+    tick(DELAY_TIME);
+    expect(store.isLoading()).toBeFalse();
+  }));
+
+  it('should throwError when addProject method call', fakeAsync(() => {
+    const { store, projectsService } = setup();
+    const newProject = { id: 'id-123456', name: 'New Project', description: 'Test Description', status: true };
+
+    store.addProject(newProject);
+
+    tick(DELAY_TIME);
+    expect(projectsService.addProject).toHaveBeenCalledWith(newProject);
+    tick(DELAY_TIME);
+    expect(store.error()).toContain(ERROR_MESSAGE);
+    expect(store.isLoading()).toBeFalse();
+  }));
+
+  it('should throwError when updateProject method call', fakeAsync(() => {
+    const { store, projectsService } = setup();
+    const updatedProject = { ...projectsMock[0], name: 'Updated Name' };
+
+    store.updateProject({ id: projectsMock[0].id, updatedProject });
+
+    tick(DELAY_TIME);
+    expect(projectsService.updateProject).toHaveBeenCalledWith(projectsMock[0].id, updatedProject);
+    tick(DELAY_TIME);
+    expect(store.error()).toContain(ERROR_MESSAGE);
+    expect(store.isLoading()).toBeFalse();
+  }));
+
+  it('should throwError when deleteProject method call', fakeAsync(() => {
+    const { store, projectsService } = setup();
+    const idToDelete = projectsMock[0].id;
+
+    store.deleteProject(idToDelete);
+
+    tick(DELAY_TIME);
+    expect(projectsService.deleteProject).toHaveBeenCalledWith(idToDelete);
+    tick(DELAY_TIME);
+    expect(store.error()).toContain(ERROR_MESSAGE);
+    expect(store.isLoading()).toBeFalse();
   }));
 });

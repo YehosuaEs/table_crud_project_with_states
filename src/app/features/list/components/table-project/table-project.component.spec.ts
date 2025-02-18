@@ -50,4 +50,14 @@ describe('TableProjectComponent', () => {
 
     expect(spyEmit).toHaveBeenCalledWith(projectId);
   });
+
+  it('should call filterGlobal when typing on the input', () => {
+    const filterValue = 'Angular project';
+    const event = { target: { value: filterValue } } as unknown as Event;
+    const filterGlobalSpy = spyOn(component.projectsListTable, 'filterGlobal');
+
+    component.onFilterTable(event);
+
+    expect(filterGlobalSpy).toHaveBeenCalledWith(filterValue, 'contains');
+  });
 });
