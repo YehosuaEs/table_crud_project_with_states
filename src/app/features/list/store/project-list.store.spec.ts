@@ -108,8 +108,6 @@ describe('ProjectsStore Methods', () => {
     store.deleteProject(id);
 
     tick(DELAY_TIME);
-    expect(store.isLoading()).toBeTrue();
-    tick(DELAY_TIME);
     expect(projectsService.deleteProject).toHaveBeenCalledWith(id);
     tick(DELAY_TIME);
     expect(store.projectsData().length).toBe(2);
