@@ -19,7 +19,6 @@ export const initialState: ProjectsState = {
 };
 
 export const ProjectsStore = signalStore(
-  { providedIn: 'root' },
   withState(initialState),
 
   withComputed(({ _projects }) => ({

@@ -1,0 +1,4 @@
+<p-card [header]="isEditMode() ? 'Edit Project' : 'Create New Project'" [style]="{ width: '100%', height: '100%' }">
+  <!-- I should handle the loading for the app-form display -->
+  <app-form [form]="form()" (formSubmit)="handleSubmit()"></app-form>
+</p-card>

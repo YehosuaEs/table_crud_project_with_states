@@ -5,11 +5,11 @@ export const routes: Routes = [
   { path: 'projects', loadComponent: () => import('./features/list/list.component').then(c => c.ListComponent) },
   {
     path: 'form/create_project',
-    loadComponent: () => import('./features/create-form/create-form.component').then(c => c.CreateFormComponent)
+    loadComponent: () => import('./features/form-handler/form-handler.component').then(c => c.FormHandlerComponent)
   },
   {
     path: 'form/:id',
-    loadComponent: () => import('./features/edit-form/edit-form.component').then(c => c.EditFormComponent)
+    loadComponent: () => import('./features/form-handler/form-handler.component').then(c => c.FormHandlerComponent)
   },
   { path: '', redirectTo: '/projects', pathMatch: 'full' },
   { path: '**', component: NotFoundComponent }

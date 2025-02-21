@@ -8,7 +8,7 @@ import { ProjectsStore } from './store/project-list.store';
 @Component({
   selector: 'app-list',
   imports: [TableProjectComponent, CommonModule],
-  providers: [],
+  providers: [ProjectsStore],
   templateUrl: './list.component.html',
   styleUrl: './list.component.scss'
 })
