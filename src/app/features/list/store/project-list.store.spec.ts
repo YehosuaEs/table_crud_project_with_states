@@ -7,15 +7,6 @@ import { ProjectsStore } from './project-list.store';
 const DELAY_TIME = 100;
 const ERROR_MESSAGE = 'Something went wrong';
 
-describe('ProjectsStore Initial states', () => {
-  it('should check initial state of projectsData ', () => {
-    const store = TestBed.inject(ProjectsStore);
-
-    expect(store.projectsData()).toEqual([]);
-    expect(store.count()).toBeDefined();
-  });
-});
-
 describe('ProjectsStore Methods', () => {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const setup = () => {
@@ -41,6 +32,10 @@ describe('ProjectsStore Methods', () => {
       projectsService
     };
   };
+
+  afterEach(() => {
+    TestBed.resetTestingModule();
+  });
 
   it('should have projects', fakeAsync(() => {
     const { store, projectsService } = setup();

@@ -28,8 +28,9 @@ export class FormHandlerComponent {
   public form = linkedSignal({
     source: (): Project | null => this.project(),
     computation: (): FormGroup => {
-      const projectForm = this.initForm();
-      return this.project() ? this.patchValuesInForm(this.project() as Project, projectForm) : projectForm;
+      const projectFormInit = this.initForm();
+      const project = this.project();
+      return project ? this.patchValuesInForm(project, projectFormInit) : projectFormInit;
     }
   });
 
