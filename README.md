@@ -31,8 +31,8 @@ ng test --code-coverage --karma-config karma.conf.js --watch=true
 
 ### Coverage 2025-02-17
 ```text
-Statements   : 99.11% ( 112/113 )
-Branches     : 100% ( 14/14 )
-Functions    : 100% ( 58/58 )
-Lines        : 99.01% ( 101/102 )
+Statements   : 96.55% ( 112/116 )
+Branches     : 87.5% ( 14/16 )
+Functions    : 95% ( 57/60 )
+Lines        : 97.14% ( 102/105 )
 ```
